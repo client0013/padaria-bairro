@@ -6,7 +6,153 @@
     <title>Padaria do Bairro</title>
     
 </head>
-<<body style="background-image: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)), url('padaria-fundo-html.png'); background-size: cover; background-position: center;">
+<body style="background-image: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)), url('padaria-fundo-html.png'); background-size: cover; background-position: center;">
+<button type="button" onclick="mostrarProdutos()">
+  Escolher produtos da padaria
+</button>
+
+<div id="lista-produtos" style="display: none;">
+  <h2>Produtos da padaria</h2>
+
+  <p>
+    <label for="paes">Pães — R$ 1,20</label>
+    <input type="number" id="paes" min="0" value="0" data-nome="Pães" data-preco="1.20">
+  </p>
+
+  <p>
+    <label for="sonho">Sonho de creme — R$ 5,00</label>
+    <input type="number" id="sonho" min="0" value="0" data-nome="Sonho de creme" data-preco="5.00">
+  </p>
+
+  <p>
+    <label for="croissant">Croissant — R$ 6,50</label>
+    <input type="number" id="croissant" min="0" value="0" data-nome="Croissant" data-preco="6.50">
+  </p>
+
+  <p>
+    <label for="bolo">Bolo de chocolate — R$ 15,00</label>
+    <input type="number" id="bolo" min="0" value="0" data-nome="Bolo de chocolate" data-preco="15.00">
+  </p>
+
+  <h3>Total: R$ <span id="total">0,00</span></h3>
+
+  <button type="button" onclick="seguirParaEndereco()">
+    Seguir para preencher endereço
+  </button>
+</div>
+
+<div id="endereco-entrega" style="display: none;">
+  <h2>Endereço de entrega</h2>
+
+  <label for="nome">Nome:</label>
+  <input type="text" id="nome" placeholder="Digite seu nome">
+    
+  
+
+
+  <label for="endereco">Endereço:</label>
+  <input type="text" id="endereco" placeholder="Rua, número e bairro">
+    
+  
+
+
+  <label for="telefone">Telefone:</label>
+  <input type="tel" id="telefone" placeholder="Digite seu telefone">
+    
+  
+
+
+  <button type="button" onclick="finalizarPedido()">
+    Finalizar pedido
+  </button>
+</div>
+
+<script>
+  const camposProdutos = document.querySelectorAll("#lista-produtos input[type='number']");
+
+  camposProdutos.forEach(function(campo) {
+    campo.addEventListener("input", calcularTotal);
+  });
+
+  function mostrarProdutos() {
+    document.getElementById("lista-produtos").style.display = "block";
+  }
+
+  function calcularTotal() {
+    let total = 0;
+
+    camposProdutos.forEach(function(campo) {
+      const quantidade = Number(campo.value);
+      const preco = Number(campo.dataset.preco);
+
+      total += quantidade * preco;
+    });
+
+    document.getElementById("total").textContent =
+      total.toFixed(2).replace(".", ",");
+  }
+
+  function seguirParaEndereco() {
+    let total = 0;
+
+    camposProdutos.forEach(function(campo) {
+      total += Number(campo.value) * Number(campo.dataset.preco);
+    });
+
+    if (total === 0) {
+      alert("Escolha pelo menos um produto.");
+      return;
+    }
+
+    document.getElementById("endereco-entrega").style.display = "block";
+    document.getElementById("endereco-entrega").scrollIntoView({
+      behavior: "smooth"
+    });
+  }
+
+  function finalizarPedido() {
+    const nome = document.getElementById("nome").value.trim();
+    const endereco = document.getElementById("endereco").value.trim();
+    const telefone = document.getElementById("telefone").value.trim();
+
+    if (nome === "" || endereco === "" || telefone === "") {
+      alert("Preencha nome, endereço e telefone.");
+      return;
+    }
+
+    let pedido = "";
+    let total = 0;
+
+    camposProdutos.forEach(function(campo) {
+      const quantidade = Number(campo.value);
+      const preco = Number(campo.dataset.preco);
+
+      if (quantidade > 0) {
+        const subtotal = quantidade * preco;
+        total += subtotal;
+
+        pedido +=
+          quantidade + "x " +
+          campo.dataset.nome +
+          " — R$ " +
+          subtotal.toFixed(2).replace(".", ",") +
+          "\n";
+      }
+    });
+
+    alert(
+      "Pedido finalizado!\n\n" +
+      "Cliente: " + nome + "\n" +
+      "Endereço: " + endereco + "\n" +
+      "Telefone: " + telefone + "\n\n" +
+      "Produtos:\n" + pedido +
+      "\nTotal: R$ " + total.toFixed(2).replace(".", ",")
+    );
+  }
+</script>
+
+
+
 
 
     <video src="./video.mp4" controls width="640" height="360"></video>
